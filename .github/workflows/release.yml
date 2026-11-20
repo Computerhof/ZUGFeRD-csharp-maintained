@@ -1,10 +1,18 @@
 # Publishes ChriveSolutions.ZUGFeRD and ChriveSolutions.ZUGFeRD.PDF to GitHub Packages when a tag vX.Y.Z is pushed.
 # The tag must match <Version> in Directory.Build.props. Only maintainers can push tags.
+# Manual start (workflow_dispatch, maintainers only): publishes an existing tag again, e.g. after a failed run - the
+# packages are built from the tagged commit, only this workflow file comes from the selected branch.
 name: Release
 
 on:
   push:
     tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish, e.g. v18.1.0'
+        required: true
+        type: string
 
 permissions: {}
 
@@ -24,8 +32,17 @@ jobs:
       - name: Allow long paths (documentation/ has paths over 260 characters)
         run: git config --system core.longpaths true
 
+      - name: Release tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          tag="${INPUT_TAG:-$GITHUB_REF_NAME}"
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "Not a release tag: $tag"; exit 1; fi
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
           persist-credentials: false
 
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
@@ -36,7 +53,7 @@ jobs:
 
       - name: Tag matches version
         run: |
-          tag="${GITHUB_REF_NAME#v}"
+          tag="${RELEASE_TAG#v}"
           version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | tr -d '\r')
           if [ "$tag" != "$version" ]; then echo "Tag $tag does not match Version $version"; exit 1; fi
 
@@ -45,15 +62,19 @@ jobs:
           dotnet test ZUGFeRD.Test/ZUGFeRD.Test.csproj -c Release
           dotnet test ZUGFeRD.PDF.Test/ZUGFeRD.PDF.Test.csproj -c Release
 
+      # The test run builds only net8.0; pack alone would then miss the other target frameworks (NU5026).
+      - name: Build all target frameworks
+        run: dotnet build ZUGFeRD.PDF/ZUGFeRD.PDF.csproj -c Release -p:GeneratePackageOnBuild=false
+
       - name: Pack
         run: |
-          dotnet pack ZUGFeRD/ZUGFeRD.csproj -c Release -o out
-          dotnet pack ZUGFeRD.PDF/ZUGFeRD.PDF.csproj -c Release -o out
+          dotnet pack ZUGFeRD/ZUGFeRD.csproj -c Release --no-build -o out
+          dotnet pack ZUGFeRD.PDF/ZUGFeRD.PDF.csproj -c Release --no-build -o out
 
       - name: Push to GitHub Packages
         env:
           NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           for package in out/*.nupkg; do
-            dotnet nuget push "$package" --source "https://nuget.pkg.github.com/Computerhof/index.json" --api-key "$NUGET_TOKEN" --skip-duplicate
+            dotnet nuget push "$package" --source "https://nuget.pkg.github.com/Computerhof/index.json" --api-key "$NUGET_TOKEN" --skip-duplicate --no-symbols
           done
