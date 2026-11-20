@@ -52,8 +52,7 @@ namespace s2industries.ZUGFeRD
             string firstPartOfDocument = System.Text.Encoding.UTF8.GetString(firstPartOfDocumentBuffer);
             bool isInvoice = true;
 
-            XmlDocument doc = new XmlDocument();
-            doc.Load(stream);
+            XmlDocument doc = XmlInput.LoadDocument(stream);
             XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.DocumentElement.OwnerDocument.NameTable);
 
             if ((firstPartOfDocument.IndexOf("<CreditNote", StringComparison.OrdinalIgnoreCase) > -1) ||
@@ -348,7 +347,7 @@ namespace s2industries.ZUGFeRD
 
                 if (chargeIndicator) // charge
                 {
-                    retval._AddTradeCharge(XmlUtils.NodeAsDecimal(node, ".//cbc:BaseAmount", nsmgr, 0).Value,
+                    retval._AddTradeCharge(XmlUtils.NodeAsDecimal(node, "./cbc:BaseAmount", nsmgr), // BT-100, optional: no invented 0.00
                                            retval.Currency,
                                            XmlUtils.NodeAsDecimal(node, ".//cbc:Amount", nsmgr, 0).Value,
                                            XmlUtils.NodeAsDecimal(node, ".//cbc:MultiplierFactorNumeric", nsmgr), // BT-101
@@ -356,11 +355,11 @@ namespace s2industries.ZUGFeRD
                                            EnumExtensions.StringToNullableEnum<TaxTypes>(XmlUtils.NodeAsString(node, ".//cac:TaxCategory/cac:TaxScheme/cbc:ID", nsmgr)),
                                            EnumExtensions.StringToNullableEnum<TaxCategoryCodes>(XmlUtils.NodeAsString(node, ".//cac:TaxCategory/cbc:ID", nsmgr)),
                                            XmlUtils.NodeAsDecimal(node, ".//cac:TaxCategory/cbc:Percent", nsmgr, 0).Value,
-                                           EnumExtensions.StringToEnum<ChargeReasonCodes>(XmlUtils.NodeAsString(node, "./cbc:AllowanceChargeReasonCode", nsmgr)));
+                                           EnumExtensions.StringToNullableEnum<ChargeReasonCodes>(XmlUtils.NodeAsString(node, "./cbc:AllowanceChargeReasonCode", nsmgr))); // BT-105, optional
                 }
                 else // allowance
                 {
-                    retval._AddTradeAllowance(XmlUtils.NodeAsDecimal(node, ".//cbc:BaseAmount", nsmgr, 0).Value,
+                    retval._AddTradeAllowance(XmlUtils.NodeAsDecimal(node, "./cbc:BaseAmount", nsmgr), // BT-93, optional: no invented 0.00
                                               retval.Currency,
                                               XmlUtils.NodeAsDecimal(node, ".//cbc:Amount", nsmgr, 0).Value,
                                               XmlUtils.NodeAsDecimal(node, ".//cbc:MultiplierFactorNumeric", nsmgr), // BT-94
@@ -368,7 +367,7 @@ namespace s2industries.ZUGFeRD
                                               EnumExtensions.StringToNullableEnum<TaxTypes>(XmlUtils.NodeAsString(node, ".//cac:TaxCategory/cac:TaxScheme/cbc:ID", nsmgr)),
                                               EnumExtensions.StringToNullableEnum<TaxCategoryCodes>(XmlUtils.NodeAsString(node, ".//cac:TaxCategory/cbc:ID", nsmgr)),
                                               XmlUtils.NodeAsDecimal(node, ".//cac:TaxCategory/cbc:Percent", nsmgr, 0).Value,
-                                              EnumExtensions.StringToEnum<AllowanceReasonCodes>(XmlUtils.NodeAsString(node, "./cbc:AllowanceChargeReasonCode", nsmgr)));
+                                              EnumExtensions.StringToNullableEnum<AllowanceReasonCodes>(XmlUtils.NodeAsString(node, "./cbc:AllowanceChargeReasonCode", nsmgr))); // BT-98, optional: no invented 41
                 }
             }
 
@@ -489,11 +488,15 @@ namespace s2industries.ZUGFeRD
                 retval.AdditionalReferencedDocuments.Add(document);
             }
 
-            retval.SpecifiedProcuringProject = new SpecifiedProcuringProject
+            string projectId = XmlUtils.NodeAsString(doc.DocumentElement, "//cac:ProjectReference/cbc:ID", nsmgr); // BT-11
+            if (!String.IsNullOrWhiteSpace(projectId)) // no empty project element when the document has no project reference
             {
-                ID = XmlUtils.NodeAsString(doc.DocumentElement, "//cac:ProjectReference/cbc:ID", nsmgr),
-                Name = String.Empty // TODO: Find value //Name = XmlUtils.NodeAsString(doc.DocumentElement, "//ram:ApplicableHeaderTradeAgreement/ram:SpecifiedProcuringProject/ram:Name", nsmgr)
-            };
+                retval.SpecifiedProcuringProject = new SpecifiedProcuringProject
+                {
+                    ID = projectId,
+                    Name = String.Empty // UBL has no project name
+                };
+            }
 
             foreach (XmlNode node in doc.SelectNodes(tradeLineItemSelector, nsmgr))
             {
@@ -504,7 +507,7 @@ namespace s2industries.ZUGFeRD
         } // !Load()
 
 
-        public override bool IsReadableByThisReaderVersion(Stream stream)
+        internal override bool IsReadable(XmlSniffResult sniff)
         {
             List<string> validURIs = new List<string>()
                 {
@@ -513,29 +516,8 @@ namespace s2industries.ZUGFeRD
                   "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
                 };
 
-            return _IsReadableByThisReaderVersion(stream, validURIs);
-        } // !IsReadableByThisReaderVersion()
-
-        private new bool _IsReadableByThisReaderVersion(Stream stream, IList<string> validURIs)
-        {
-            long oldStreamPosition = stream.Position;
-            stream.Position = 0;
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
-            {
-                string data = reader.ReadToEnd().Replace(" ", String.Empty).ToLower();
-                foreach (string validURI in validURIs)
-                {
-                    if (data.Contains(string.Format("=\"{0}\"", validURI.ToLower())))
-                    {
-                        stream.Position = oldStreamPosition;
-                        return true;
-                    }
-                }
-            }
-
-            stream.Position = oldStreamPosition;
-            return false;
-        }
+            return sniff.ContainsAttributeValue(validURIs);
+        } // !IsReadable()
 
         private static List<TradeLineItem> _parseTradeLineItem(XmlNode tradeLineItem, XmlNamespaceManager nsmgr = null, string parentLineId = null)
         {

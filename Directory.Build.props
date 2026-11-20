@@ -5,7 +5,7 @@
     so existing code keeps compiling; only the NuGet package IDs differ (ChriveSolutions.*).
   -->
   <PropertyGroup>
-    <Version>18.0.1</Version>
+    <Version>18.1.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <Authors>Stephan Stapel; chrive-solutions e.U.</Authors>

@@ -58,8 +58,7 @@ namespace s2industries.ZUGFeRD
                 throw new IllegalStreamException("Cannot read from stream");
             }
 
-            XmlDocument doc = new XmlDocument();
-            doc.Load(stream);
+            XmlDocument doc = XmlInput.LoadDocument(stream);
             XmlNamespaceManager nsmgr = _CreateFixedNamespaceManager(doc);
 
             if (!nsmgr.HasNamespace("rsm"))
@@ -455,7 +454,7 @@ namespace s2industries.ZUGFeRD
         } // !Load()
 
 
-        public override bool IsReadableByThisReaderVersion(Stream stream)
+        internal override bool IsReadable(XmlSniffResult sniff)
         {
             List<string> validURIs = new List<string>()
                 {
@@ -467,8 +466,8 @@ namespace s2industries.ZUGFeRD
                     "urn:zugferd.de:2p0:minimum" // Profil MINIMUM
                 };
 
-            return _IsReadableByThisReaderVersion(stream, validURIs);
-        } // !IsReadableByThisReaderVersion()
+            return sniff.ContainsText(validURIs);
+        } // !IsReadable()
 
 
         private static TradeLineItem _parseTradeLineItem(XmlNode tradeLineItem, XmlNamespaceManager nsmgr = null)

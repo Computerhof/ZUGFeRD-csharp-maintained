@@ -6,6 +6,25 @@ only in `Directory.Build.props`. Releases are Git tags `vX.Y.Z`. History of the 
 
 ## [Unreleased]
 
+## [18.1.0] - 2026-11-20
+
+First release of the maintenance fork. Assembly names, namespaces and the public API are unchanged; only the package
+IDs differ (see below).
+
+### Security
+- XML input: documents with a `<!DOCTYPE` are rejected with an `XmlException` (`DtdProcessing.Prohibit`,
+  `XmlResolver = null`) in `Load` and `GetVersion`. Before, internal entities were resolved. (#4)
+- Version detection streams the document once instead of reading it into strings once per reader: memory for a
+  50 MB input dropped from about 1.29 GB to 334 MB (the rest is the `XmlDocument` itself). Detection results are
+  unchanged; non-XML input still raises `UnsupportedException`. (#5)
+
+### Fixed
+- CII 2.0/2.3: `ram:ApplicableHeaderTradeDelivery` is written even without delivery data; the schema requires it.
+  The output was schema-invalid before. (#6)
+- UBL reading: document-level allowances/charges without reason code or base amount no longer get an invented
+  reason code `41` (first enum value) or base amount `0.00`; an empty `cac:ProjectReference` no longer creates an
+  empty project. (#7, further gaps of #7 remain open)
+
 ### Changed
 - Fork of ZUGFeRD-csharp 18.0.1 (Apache-2.0, Stephan Stapel). Assembly names and namespaces unchanged.
 - NuGet package IDs `ChriveSolutions.ZUGFeRD` and `ChriveSolutions.ZUGFeRD.PDF` (instead of `ZUGFeRD-csharp` and

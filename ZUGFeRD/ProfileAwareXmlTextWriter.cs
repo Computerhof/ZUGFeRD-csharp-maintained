@@ -208,6 +208,22 @@ namespace s2industries.ZUGFeRD
             }
         } // !WriteEndElement()
 
+
+        /// <summary>
+        /// Ends the current element and writes it even if it has no content, for elements the schema requires
+        /// (e.g. ram:ApplicableHeaderTradeDelivery). Profile filtering still applies.
+        /// </summary>
+        public void WriteRequiredEndElement()
+        {
+            StackInfo infoForCurrentXmlLevel = this.XmlStack.Peek();
+            if (infoForCurrentXmlLevel.IsVisible && !infoForCurrentXmlLevel.IsWritten)
+            {
+                _FlushPendingStartElements();
+            }
+
+            WriteEndElement();
+        } // !WriteRequiredEndElement()
+
         public void WriteOptionalElementString(string prefix, string tagName, string value, Profile profile = Profile.Unknown)
         {
             if (String.IsNullOrWhiteSpace(value))
