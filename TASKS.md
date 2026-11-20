@@ -10,9 +10,10 @@
 - [x] Paket-IDs `ChriveSolutions.ZUGFeRD` / `.PDF`, PDF per Projektreferenz, Version in `Directory.Build.props`
 - [x] SECURITY, CONTRIBUTING, NOTICE, CODEOWNERS, CHANGELOG, Dependabot, CI, Release nach GitHub Packages
 - [x] Prüfagent (`.agent/`, `docs/AGENT.md`) mit Baseline
-- [ ] CodeQL-Standardeinrichtung (C#, Actions) nach dem Merge einschalten
-- [ ] Actions auf SHA-Pins verpflichten (`sha_pinning_required`) nach dem Merge
-- [ ] Tag-Ruleset `v*` (kein Löschen/Überschreiben)
+- [x] CI auf Windows (PDF-Tests brauchen Arial; `core.longpaths` wegen `documentation/`)
+- [x] CodeQL-Standardeinrichtung (C#, Actions) eingeschaltet, erster Lauf ohne Befund
+- [x] Actions: nur GitHub-eigene, SHA-Pins Pflicht (`sha_pinning_required`)
+- [x] Tag-Ruleset `release-tags` für `v*` (kein Löschen/Überschreiben); `main` verlangt den Check `build-test`
 - [ ] Secret `ANTHROPIC_API_KEY` (Chris) und erster Lauf per `workflow_dispatch` (Freigabe Chris)
 - [ ] Erstes Release `v18.1.0` nach den ersten Fixes; Prozessor stellt danach die Paketreferenz um
 
