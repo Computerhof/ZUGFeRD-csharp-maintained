@@ -11,11 +11,15 @@ permissions: {}
 jobs:
   publish:
     if: github.repository == 'Computerhof/ZUGFeRD-csharp-maintained'
-    runs-on: ubuntu-24.04
+    # Windows: the PDF tests embed system fonts (Arial), which Ubuntu runners do not have.
+    runs-on: windows-2025
     timeout-minutes: 20
     permissions:
       contents: read
       packages: write
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -30,7 +34,7 @@ jobs:
       - name: Tag matches version
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          version=$(grep -oP '(?<=<Version>)[^<]+' Directory.Build.props)
+          version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | tr -d '\r')
           if [ "$tag" != "$version" ]; then echo "Tag $tag does not match Version $version"; exit 1; fi
 
       - name: Tests
