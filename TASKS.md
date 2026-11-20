@@ -14,6 +14,7 @@
 - [x] CodeQL-Standardeinrichtung (C#, Actions) eingeschaltet, erster Lauf ohne Befund
 - [x] Actions: nur GitHub-eigene, SHA-Pins Pflicht (`sha_pinning_required`)
 - [x] Tag-Ruleset `release-tags` für `v*` (kein Löschen/Überschreiben); `main` verlangt den Check `build-test`
+- [x] Monatsprüfung meldet neuere Modelle derselben Linie und Abkündigung (kein `opus-latest` in der API)
 - [ ] Secret `ANTHROPIC_API_KEY` (Chris) und erster Lauf per `workflow_dispatch` (Freigabe Chris)
 - [ ] Erstes Release `v18.1.0` nach den ersten Fixes; Prozessor stellt danach die Paketreferenz um
 

@@ -61,8 +61,15 @@ nur in einem engen Zeichensatz in den Zustand (`safe()` in `collect.py`).
 ## Modell und Kosten
 
 `claude-opus-5-5` mit adaptivem Denken, `effort: high`, Streaming, `max_tokens` 16000, serverseitige Ausweichmodelle bei
-Ablehnung (`fallbacks: "default"`). Änderbar über die Umgebungsvariablen `AGENT_MODEL`, `AGENT_EFFORT` und
-`AGENT_MAX_TOKENS` im Workflow (z. B. `claude-sonnet-5-5` für etwa die halben Kosten). Ein Lauf mit Änderungen hat
+Ablehnung (`fallbacks: "default"`). Das Modell steht als `AGENT_MODEL` im Workflow (einzige Stelle); `AGENT_EFFORT`
+und `AGENT_MAX_TOKENS` lassen sich dort ebenso setzen (z. B. `claude-sonnet-5-5` für etwa die halben Kosten).
+
+**Neue Modelle:** Die API kennt keinen Alias wie `opus-latest`, und ein stiller Wechsel könnte an geänderten
+Parametern scheitern. Darum liest `assess.py` bei jedem Lauf die Models-API (`models.retrieve` + `models.list`, keine
+Tokens) und schreibt `models.json`. Gibt es in derselben Modelllinie (API-Feld `line`, z. B. `opus`) ein neueres
+aktives Modell oder ist das eingestellte abgekündigt, setzt `publish.py` einen sichtbaren Hinweis an den Anfang des
+Issues. Umgestellt wird von Hand: `AGENT_MODEL` per PR ändern, vorher die Migrationshinweise des neuen Modells lesen.
+Scheitert die Abfrage, steht das nur im Faktenanhang; der Lauf läuft weiter. Ein Lauf mit Änderungen hat
 etwa 10 000 Eingabe-Tokens und wenige Tausend Ausgabe-Tokens, das sind geschätzt **unter 0,20 USD** (nicht
 gemessen). Ohne Änderungen wird das Modell nicht aufgerufen. Actions-Minuten sind auf öffentlichen Repos kostenlos.
 
