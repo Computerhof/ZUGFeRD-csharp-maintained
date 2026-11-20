@@ -6,6 +6,10 @@ only in `Directory.Build.props`. Releases are Git tags `vX.Y.Z`. History of the 
 
 ## [Unreleased]
 
+### Changed
+- Release workflow builds all target frameworks before packing (the first run of `v18.1.0` failed with NU5026 and
+  published nothing) and can publish an existing tag again by manual start.
+
 ## [18.1.0] - 2026-11-20
 
 First release of the maintenance fork. Assembly names, namespaces and the public API are unchanged; only the package
