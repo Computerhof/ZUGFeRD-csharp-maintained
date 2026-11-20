@@ -16,7 +16,8 @@ only in `Directory.Build.props`. Releases are Git tags `vX.Y.Z`. History of the 
 
 ### Added
 - `SECURITY.md`, `CONTRIBUTING.md`, `NOTICE`, `CODEOWNERS`, Dependabot configuration.
-- CI for pull requests (build, tests, license header); release workflow for GitHub Packages.
+- CI for pull requests on Windows (build, all tests incl. PDF font embedding, license header); release workflow
+  for GitHub Packages.
 - Monthly check agent (`.agent/`, `docs/AGENT.md`): standards and vulnerabilities, one issue per month.
 
 ### Removed
