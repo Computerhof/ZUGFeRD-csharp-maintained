@@ -1,0 +1,58 @@
+# Monthly check agent - see docs/AGENT.md.
+# Triggers: schedule and manual dispatch only. Never add pull_request, pull_request_target, issues,
+# issue_comment or any other event that people outside the repository can cause.
+# Result: exactly one issue per run. The agent never pushes, merges or changes code.
+name: Monatsprüfung
+
+on:
+  schedule:
+    - cron: '23 4 3 * *' # 3rd of every month, 04:23 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: monatspruefung
+  cancel-in-progress: false
+
+jobs:
+  pruefen:
+    if: github.repository == 'Computerhof/ZUGFeRD-csharp-maintained' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.13'
+
+      # Fixed versions with hashes, wheels only; installed in a step that holds no secret.
+      - name: Install Anthropic SDK
+        run: python -m pip install --no-deps --only-binary :all: --require-hashes -r .agent/requirements.txt
+
+      - name: Collect (scripts only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .agent/collect.py
+
+      - name: Assess (model, no tools)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python .agent/assess.py
+
+      - name: Create issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .agent/publish.py
+
+      - name: Report failure as issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .agent/publish.py --failed

@@ -1,3 +1,18 @@
+> [!IMPORTANT]
+> **Maintenance fork.** This repository is a fork of [ZUGFeRD-csharp](https://github.com/stephanstapel/ZUGFeRD-csharp)
+> by Stephan Stapel (Apache-2.0), maintained by chrive-solutions e.U. **for its own products**. The original's
+> maintenance ends on 30 November 2026; this fork keeps the library usable (bug fixes, security fixes, checks
+> against the standards).
+>
+> - **No commitments to third parties:** no support, no response times, no roadmap.
+> - **Issues are welcome.** Pull requests are reviewed, but without a response deadline (see `CONTRIBUTING.md`).
+> - **Security reports** only privately, see `SECURITY.md`.
+> - Packages: `ChriveSolutions.ZUGFeRD` and `ChriveSolutions.ZUGFeRD.PDF` on GitHub Packages. Assembly names and
+>   namespaces (`s2industries.ZUGFeRD`) are unchanged. Only `ZUGFeRD` and `ZUGFeRD.PDF` are maintained.
+> - Credits: original work Copyright 2013-2026 Stephan Stapel / STwo Industries GmbH, see `NOTICE` and `LICENSE.txt`.
+>
+> The original author's text follows unchanged.
+
 ## Maintenance ends on November 30, 2026
 
 ZUGFeRD-csharp is entering its final maintenance phase. My maintenance of this project will end on November 30, 2026.

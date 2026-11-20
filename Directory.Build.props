@@ -1,0 +1,17 @@
+<Project>
+  <!--
+    Maintenance fork of ZUGFeRD-csharp (Stephan Stapel, Apache-2.0).
+    The version is defined here and only here (SemVer). Assembly names and namespaces stay as in the original,
+    so existing code keeps compiling; only the NuGet package IDs differ (ChriveSolutions.*).
+  -->
+  <PropertyGroup>
+    <Version>18.0.1</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <Authors>Stephan Stapel; chrive-solutions e.U.</Authors>
+    <Company>chrive-solutions e.U.</Company>
+    <Copyright>Original work STwo Industries GmbH 2013-2026; modifications chrive-solutions e.U. 2026</Copyright>
+    <PackageProjectUrl>https://github.com/Computerhof/ZUGFeRD-csharp-maintained</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Computerhof/ZUGFeRD-csharp-maintained</RepositoryUrl>
+  </PropertyGroup>
+</Project>

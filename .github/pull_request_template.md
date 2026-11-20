@@ -1,14 +1,13 @@
 ## Summary
-- What changed and why?
+- What changed and why? Link the issue.
 
 ## Checklist
-- [ ] Code follows repo **Coding Instructions**
-- [ ] Public APIs documented (XML)
-- [ ] Unit tests added/updated
-- [ ] No blocking async (`.Result` / `GetAwaiter().GetResult()`)
-- [ ] `CancellationToken` respected
-- [ ] Analyzers clean (`dotnet build` no warnings as errors)
-- [ ] `dotnet format --verify-no-changes` passes
+- [ ] Small and focused (one topic)
+- [ ] Unit tests added/updated, `dotnet test` green
+- [ ] No new dependency (or: reason given below)
+- [ ] No binary files, no changes under `.github/` or `.agent/`
+- [ ] No real invoice data in tests (invented data only)
+- [ ] CHANGELOG.md updated if users notice the change
 
 ## Breaking changes?
 - [ ] No

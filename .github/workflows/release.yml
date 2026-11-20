@@ -1,0 +1,52 @@
+# Publishes ChriveSolutions.ZUGFeRD and ChriveSolutions.ZUGFeRD.PDF to GitHub Packages when a tag vX.Y.Z is pushed.
+# The tag must match <Version> in Directory.Build.props. Only maintainers can push tags.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions: {}
+
+jobs:
+  publish:
+    if: github.repository == 'Computerhof/ZUGFeRD-csharp-maintained'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Tag matches version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version=$(grep -oP '(?<=<Version>)[^<]+' Directory.Build.props)
+          if [ "$tag" != "$version" ]; then echo "Tag $tag does not match Version $version"; exit 1; fi
+
+      - name: Tests
+        run: |
+          dotnet test ZUGFeRD.Test/ZUGFeRD.Test.csproj -c Release
+          dotnet test ZUGFeRD.PDF.Test/ZUGFeRD.PDF.Test.csproj -c Release
+
+      - name: Pack
+        run: |
+          dotnet pack ZUGFeRD/ZUGFeRD.csproj -c Release -o out
+          dotnet pack ZUGFeRD.PDF/ZUGFeRD.PDF.csproj -c Release -o out
+
+      - name: Push to GitHub Packages
+        env:
+          NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for package in out/*.nupkg; do
+            dotnet nuget push "$package" --source "https://nuget.pkg.github.com/Computerhof/index.json" --api-key "$NUGET_TOKEN" --skip-duplicate
+          done

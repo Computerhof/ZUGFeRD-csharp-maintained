@@ -1,0 +1,43 @@
+{
+  "fork": {
+    "repo": "Computerhof/ZUGFeRD-csharp-maintained",
+    "projects": [
+      "ZUGFeRD/ZUGFeRD.csproj",
+      "ZUGFeRD.PDF/ZUGFeRD.PDF.csproj",
+      "ZUGFeRD.Test/ZUGFeRD.Test.csproj",
+      "ZUGFeRD.PDF.Test/ZUGFeRD.PDF.Test.csproj"
+    ],
+    "xml_readers": [
+      "ZUGFeRD/InvoiceDescriptor1Reader.cs",
+      "ZUGFeRD/InvoiceDescriptor20Reader.cs",
+      "ZUGFeRD/InvoiceDescriptor22UblReader.cs",
+      "ZUGFeRD/InvoiceDescriptor23CIIReader.cs",
+      "ZUGFeRD/IInvoiceDescriptorReader.cs"
+    ]
+  },
+  "upstream": {
+    "repo": "stephanstapel/ZUGFeRD-csharp",
+    "nuget": ["ZUGFeRD-csharp", "ZUGFeRD.PDF-csharp"]
+  },
+  "standards": {
+    "github_releases": [
+      { "key": "kosit-xrechnung-schematron", "repo": "itplr-kosit/xrechnung-schematron", "report_only": false },
+      { "key": "kosit-validator-configuration", "repo": "itplr-kosit/validator-configuration-xrechnung", "report_only": false },
+      { "key": "cen-en16931-validation", "repo": "ConnectingEurope/eInvoicing-EN16931", "report_only": false },
+      { "key": "peppol-bis-billing", "repo": "OpenPEPPOL/peppol-bis-invoice-3", "report_only": true }
+    ],
+    "web_pages": [
+      { "key": "ferd-download-zugferd", "url": "https://www.ferd-net.de/download-zugferd", "mode": "versions" },
+      { "key": "ferd-standard-zugferd", "url": "https://www.ferd-net.de/standards/zugferd", "mode": "versions" },
+      { "key": "ferd-news", "url": "https://www.ferd-net.de/", "mode": "news_links", "link_filter": "zugferd|factur" }
+    ]
+  },
+  "limits": {
+    "release_notes_chars": 3000,
+    "advisory_text_chars": 600,
+    "web_excerpt_chars": 6000,
+    "untrusted_total_chars": 60000,
+    "http_timeout_seconds": 30,
+    "http_max_bytes": 5000000
+  }
+}

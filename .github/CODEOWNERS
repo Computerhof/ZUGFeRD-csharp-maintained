@@ -1,0 +1,7 @@
+# Every change needs the maintainer's review. Workflows, agent and repository settings belong to the maintainer only.
+*             @Computerhof
+/.github/**   @Computerhof
+/.agent/**    @Computerhof
+/docs/AGENT.md @Computerhof
+/SECURITY.md  @Computerhof
+/Directory.Build.props @Computerhof

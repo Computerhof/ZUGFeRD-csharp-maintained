@@ -1,0 +1,34 @@
+# Security updates are enabled in the repository settings. Version updates monthly, grouped, small.
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directories: ["/ZUGFeRD", "/ZUGFeRD.PDF", "/ZUGFeRD.Test", "/ZUGFeRD.PDF.Test"]
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      test-packages:
+        patterns: ["MSTest*", "Microsoft.NET.Test.Sdk", "coverlet.*"]
+    ignore:
+      # Major jumps of the runtime-bound packages are decided by hand (target frameworks netstandard2.0 to net8.0).
+      - dependency-name: "System.Text.Encoding.CodePages"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.SourceLink.GitHub"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # The agent's Python dependencies are hash-pinned; Dependabot keeps them current (regenerated with hashes).
+  - package-ecosystem: pip
+    directory: "/.agent"
+    schedule:
+      interval: monthly
+    groups:
+      agent:
+        patterns: ["*"]
