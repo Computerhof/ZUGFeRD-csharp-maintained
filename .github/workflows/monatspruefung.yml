@@ -34,7 +34,7 @@ jobs:
 
       # Fixed versions with hashes, wheels only; installed in a step that holds no secret.
       - name: Install Anthropic SDK
-        run: python -m pip install --no-deps --only-binary :all: --require-hashes -r .agent/requirements.txt
+        run: python -m pip install --no-deps --only-binary ':all:' --require-hashes -r .agent/requirements.txt
 
       - name: Collect (scripts only)
         env:
