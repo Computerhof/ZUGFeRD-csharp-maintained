@@ -636,7 +636,7 @@ namespace s2industries.ZUGFeRD
                 _Writer.WriteEndElement(); // !DeliveryNoteReferencedDocument
             }
 
-            _Writer.WriteEndElement(); // !ApplicableHeaderTradeDelivery
+            _Writer.WriteRequiredEndElement(); // !ApplicableHeaderTradeDelivery (required by the schema, also when empty)
 
             _WriteComment(_Writer, options, InvoiceCommentConstants.ApplicableHeaderTradeSettlementComment);
             _Writer.WriteStartElement("ram", "ApplicableHeaderTradeSettlement");

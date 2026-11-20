@@ -25,6 +25,8 @@ GitHub security advisory.
 
 ## Known hardening topics
 
-Reading XML from untrusted sources (`InvoiceDescriptor.Load`) is tracked in the issues of this repository.
-Until hardened, callers that process XML from unknown senders should limit the input size and reject documents
-containing a `<!DOCTYPE` before calling `Load`.
+Since 18.1.0, `InvoiceDescriptor.Load` and `GetVersion` reject documents with a `<!DOCTYPE` (`XmlException`; no
+entity expansion, no external resources) and detect the version by streaming instead of copying the document once per
+reader. Loading still builds the whole document in memory (`XmlDocument`, a few times the input size), so callers that
+process XML from unknown senders should still limit the input size. Versions up to 18.0.1 (including the original
+package `ZUGFeRD-csharp`) resolve internal entities and use about 26 times the input size in memory.

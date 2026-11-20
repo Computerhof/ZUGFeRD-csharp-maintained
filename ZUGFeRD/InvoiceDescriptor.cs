@@ -541,33 +541,10 @@ namespace s2industries.ZUGFeRD
         /// <returns>ZUGFeRD version of the invoice that was passed to the function</returns>
         public static ZUGFeRDVersion GetVersion(string filename)
         {
-            IInvoiceDescriptorReader reader = new InvoiceDescriptor1Reader();
-            if (reader.IsReadableByThisReaderVersion(filename))
+            using (Stream fs = _OpenFile(filename))
             {
-                return ZUGFeRDVersion.Version1;
+                return _Detect(fs, "No ZUGFeRD invoice reader was able to parse this file '" + filename + "'!").Value;
             }
-
-            reader = new InvoiceDescriptor22UBLReader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return ZUGFeRDVersion.Version23;
-            }
-
-            reader = new InvoiceDescriptor23CIIReader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return ZUGFeRDVersion.Version23;
-            }
-
-            reader = new InvoiceDescriptor20Reader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return ZUGFeRDVersion.Version20;
-            }
-
-            throw new UnsupportedException("No ZUGFeRD invoice reader was able to parse this file '" + filename + "'!");
-
-            // return null;
         } // !GetVersion()
 
 
@@ -580,31 +557,7 @@ namespace s2industries.ZUGFeRD
         /// <returns>ZUGFeRD version of the invoice that was passed to the function</returns>
         public static ZUGFeRDVersion GetVersion(Stream stream)
         {
-            IInvoiceDescriptorReader reader = new InvoiceDescriptor1Reader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return ZUGFeRDVersion.Version1;
-            }
-
-            reader = new InvoiceDescriptor22UBLReader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return ZUGFeRDVersion.Version23;
-            }
-
-            reader = new InvoiceDescriptor23CIIReader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return ZUGFeRDVersion.Version23;
-            }
-
-            reader = new InvoiceDescriptor20Reader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return ZUGFeRDVersion.Version20;
-            }
-
-            throw new UnsupportedException("No ZUGFeRD invoice reader was able to parse this stream!");
+            return _Detect(stream, "No ZUGFeRD invoice reader was able to parse this stream!").Value;
         } // !GetVersion()
 
 
@@ -615,38 +568,13 @@ namespace s2industries.ZUGFeRD
         ///
         /// Important: the stream will not be closed by this function, make sure to close it by yourself!
         ///
+        /// Documents with a DOCTYPE (DTD) are rejected with an XmlException.
         /// </summary>
         /// <param name="stream">Stream where to read the ZUGFeRD invoice</param>
         /// <returns></returns>
         public static InvoiceDescriptor Load(Stream stream)
         {
-            IInvoiceDescriptorReader reader = new InvoiceDescriptor1Reader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return reader.Load(stream);
-            }
-
-            reader = new InvoiceDescriptor22UBLReader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return reader.Load(stream);
-            }
-
-            reader = new InvoiceDescriptor23CIIReader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return reader.Load(stream);
-            }
-
-            reader = new InvoiceDescriptor20Reader();
-            if (reader.IsReadableByThisReaderVersion(stream))
-            {
-                return reader.Load(stream);
-            }
-
-            throw new UnsupportedException("No ZUGFeRD invoice reader was able to parse this stream!");
-
-            // return null;
+            return _Detect(stream, "No ZUGFeRD invoice reader was able to parse this stream!").Key.Load(stream);
         } // !Load()
 
 
@@ -654,39 +582,55 @@ namespace s2industries.ZUGFeRD
         /// Loads a ZUGFeRD invoice from a file.
         ///
         /// Please make sure that the file is exists, otherwise this call will raise a FileNotFoundException.
+        /// Documents with a DOCTYPE (DTD) are rejected with an XmlException.
         /// </summary>
         /// <param name="filename">Name of the ZUGFeRD invoice file</param>
         /// <returns></returns>
         public static InvoiceDescriptor Load(string filename)
         {
-            IInvoiceDescriptorReader reader = new InvoiceDescriptor1Reader();
-            if (reader.IsReadableByThisReaderVersion(filename))
+            using (Stream fs = _OpenFile(filename))
             {
-                return reader.Load(filename);
+                return _Detect(fs, "No ZUGFeRD invoice reader was able to parse this file '" + filename + "'!").Key.Load(fs);
             }
-
-            reader = new InvoiceDescriptor22UBLReader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return reader.Load(filename);
-            }
-
-            reader = new InvoiceDescriptor23CIIReader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return reader.Load(filename);
-            }
-
-            reader = new InvoiceDescriptor20Reader();
-            if (reader.IsReadableByThisReaderVersion(filename))
-            {
-                return reader.Load(filename);
-            }
-
-            throw new UnsupportedException("No ZUGFeRD invoice reader was able to parse this file '" + filename + "'!");
-
-            // return null;
         } // !Load()
+
+
+        private static Stream _OpenFile(string filename)
+        {
+            if (!System.IO.File.Exists(filename))
+            {
+                throw new FileNotFoundException();
+            }
+
+            return new FileStream(filename, FileMode.Open, FileAccess.Read);
+        } // !_OpenFile()
+
+
+        /// <summary>
+        /// Detects the version once (streaming, see XmlInput.Sniff) and returns the matching reader.
+        /// The order of the readers is the same as in earlier versions.
+        /// </summary>
+        private static KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion> _Detect(Stream stream, string errorMessage)
+        {
+            XmlSniffResult sniff = XmlInput.Sniff(stream);
+            KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion>[] candidates =
+            {
+                new KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion>(new InvoiceDescriptor1Reader(), ZUGFeRDVersion.Version1),
+                new KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion>(new InvoiceDescriptor22UBLReader(), ZUGFeRDVersion.Version23),
+                new KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion>(new InvoiceDescriptor23CIIReader(), ZUGFeRDVersion.Version23),
+                new KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion>(new InvoiceDescriptor20Reader(), ZUGFeRDVersion.Version20)
+            };
+
+            foreach (KeyValuePair<IInvoiceDescriptorReader, ZUGFeRDVersion> candidate in candidates)
+            {
+                if (candidate.Key.IsReadable(sniff))
+                {
+                    return candidate;
+                }
+            }
+
+            throw new UnsupportedException(errorMessage);
+        } // !_Detect()
 
 
         /// <summary>

@@ -30,7 +30,13 @@ namespace s2industries.ZUGFeRD
     {
         protected Dictionary<string, string> _Namespaces = new Dictionary<string, string>();
         public abstract InvoiceDescriptor Load(Stream stream);
-        public abstract bool IsReadableByThisReaderVersion(Stream stream);
+        internal abstract bool IsReadable(XmlSniffResult sniff);
+
+
+        public bool IsReadableByThisReaderVersion(Stream stream)
+        {
+            return IsReadable(XmlInput.Sniff(stream));
+        } // !IsReadableByThisReaderVersion()
 
 
         public InvoiceDescriptor Load(string filename)
@@ -135,27 +141,5 @@ namespace s2industries.ZUGFeRD
                 mgr.AddNamespace(prefix, expectedUri);
             }
         } //!_AddNamespaceIfExists()
-
-
-        protected bool _IsReadableByThisReaderVersion(Stream stream, IList<string> validURIs)
-        {
-            long oldStreamPosition = stream.Position;
-            stream.Position = 0;
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
-            {
-                string data = reader.ReadToEnd().Replace(" ", String.Empty);
-                foreach (string validURI in validURIs)
-                {
-                    if (data.IndexOf(String.Format(">{0}<", validURI), StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        stream.Position = oldStreamPosition;
-                        return true;
-                    }
-                }
-            }
-
-            stream.Position = oldStreamPosition;
-            return false;
-        } // !_IsReadableByThisReaderVersion()
     }
 }

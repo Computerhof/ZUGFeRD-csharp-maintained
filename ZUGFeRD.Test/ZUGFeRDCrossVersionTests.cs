@@ -1260,9 +1260,11 @@ namespace s2industries.ZUGFeRD.Test
             string xmlContent = Encoding.UTF8.GetString(ms.ToArray());;
 
             // load dom, find any empty elements (elements without child nodes and without value) and fail if any is found
+            // except elements the schema requires even when empty (maintenance fork: ApplicableHeaderTradeDelivery, CII D16B)
+            string[] requiredByTheSchema = { "ApplicableHeaderTradeDelivery" };
             var doc = XDocument.Parse(xmlContent, LoadOptions.SetLineInfo);
             var emptyElements = doc.Descendants()
-                .Where(e => !e.Nodes().Any() && !e.Attributes().Any())
+                .Where(e => !e.Nodes().Any() && !e.Attributes().Any() && !requiredByTheSchema.Contains(e.Name.LocalName))
                 .ToList();
             Assert.AreEqual(0, emptyElements.Count, $"Found empty elements in the XML: {string.Join("\r\n* ", emptyElements.Select(e => $"{e.Name.LocalName} (line {((IXmlLineInfo)e).LineNumber})"))}");
         } // !TestAvoidEmptyElementsWithDemoInvoice()
@@ -1290,9 +1292,11 @@ namespace s2industries.ZUGFeRD.Test
             string xmlContent = Encoding.UTF8.GetString(ms.ToArray());
 
             // load dom, find any empty elements (elements without child nodes and without value) and fail if any is found
+            // except elements the schema requires even when empty (maintenance fork: ApplicableHeaderTradeDelivery, CII D16B)
+            string[] requiredByTheSchema = { "ApplicableHeaderTradeDelivery" };
             var doc = XDocument.Parse(xmlContent, LoadOptions.SetLineInfo);
             var emptyElements = doc.Descendants()
-                .Where(e => !e.Nodes().Any() && !e.Attributes().Any())
+                .Where(e => !e.Nodes().Any() && !e.Attributes().Any() && !requiredByTheSchema.Contains(e.Name.LocalName))
                 .ToList();
             Assert.IsEmpty(emptyElements, $"Found empty elements in the XML: {string.Join("\r\n* ", emptyElements.Select(e => $"{e.Name.LocalName} (line {((IXmlLineInfo)e).LineNumber})"))}");
         } // !TestAvoidEmptyElementsWithMinimalInvoice()

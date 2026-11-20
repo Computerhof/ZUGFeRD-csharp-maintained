@@ -20,9 +20,10 @@
 
 ## Fixes (je mit Test)
 
-- [ ] XML-Leser: DTD verbieten (`DtdProcessing.Prohibit`, `XmlResolver = null`)
-- [ ] XML-Leser: Speicherbedarf beim Erkennen der Version (`ReadToEnd().Replace` je Leser, ~26-fach der Eingabe)
-- [ ] Ohne Lieferangaben fehlt `ApplicableHeaderTradeDelivery` (CII D16B verlangt ihn)
-- [ ] UBL-Lesen erfindet bei Kopf-Abschlägen Grundcode 41 / Basis 0,00
+- [x] XML-Leser: DTD verbieten (`DtdProcessing.Prohibit`, `XmlResolver = null`) — #4, 18.1.0
+- [x] XML-Leser: Speicherbedarf beim Erkennen der Version (50 MB: 1,29 GB → 334 MB) — #5, 18.1.0
+- [x] Ohne Lieferangaben fehlt `ApplicableHeaderTradeDelivery` (CII D16B verlangt ihn) — #6, 18.1.0
+- [x] UBL-Lesen erfindet bei Kopf-Abschlägen Grundcode 41 / Basis 0,00, leeres Projekt — #7, 18.1.0
+- [ ] UBL-Lesen, Rest aus #7: Zahlungsempfänger (BR-17), Steuervertreter (BR-18/56), Typcode 916, Adresszeilen
 - [ ] Eingehende ZUGFeRD 2.4/2.5(.2)-XML lesen: Muster beschaffen und testen
 - [ ] Warnungen CS1591/CS1570 (440, aus dem Original) abbauen, danach `TreatWarningsAsErrors`

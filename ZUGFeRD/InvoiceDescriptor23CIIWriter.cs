@@ -863,7 +863,7 @@ namespace s2industries.ZUGFeRD
             }
             #endregion
 
-            _Writer.WriteEndElement(); // !ApplicableHeaderTradeDelivery
+            _Writer.WriteRequiredEndElement(); // !ApplicableHeaderTradeDelivery (required by the schema, also when empty)
             #endregion
 
             #region ApplicableHeaderTradeSettlement            
