@@ -15,8 +15,8 @@
 - [x] Actions: nur GitHub-eigene, SHA-Pins Pflicht (`sha_pinning_required`)
 - [x] Tag-Ruleset `release-tags` für `v*` (kein Löschen/Überschreiben); `main` verlangt den Check `build-test`
 - [x] Monatsprüfung meldet neuere Modelle derselben Linie und Abkündigung (kein `opus-latest` in der API)
-- [ ] Secret `ANTHROPIC_API_KEY` (Chris) und erster Lauf per `workflow_dispatch` (Freigabe Chris)
-- [x] Erstes Release `v18.1.0` (2026-11-20, GitHub Packages, #13); der Prozessor bezieht die Pakete seit seiner Version 0.36.11
+- [ ] Secret `ANTHROPIC_API_KEY` und erster Lauf per `workflow_dispatch` (Maintainer, #10)
+- [x] Erstes Release `v18.1.0` (2026-11-20, GitHub Packages, #13)
 
 ## Fixes (je mit Test)
 
