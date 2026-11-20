@@ -19,6 +19,8 @@ only in `Directory.Build.props`. Releases are Git tags `vX.Y.Z`. History of the 
 - CI for pull requests on Windows (build, all tests incl. PDF font embedding, license header); release workflow
   for GitHub Packages.
 - Monthly check agent (`.agent/`, `docs/AGENT.md`): standards and vulnerabilities, one issue per month.
+- Monthly check reports newer Claude models of the configured line and deprecation of the configured model
+  (Models API); the model is set only in the workflow (`AGENT_MODEL`) and never switched automatically.
 
 ### Removed
 - Original workflows `dotnet.yml` and `license-check.yml` (replaced by `ci.yml`), `.licenserc.json`.

@@ -76,5 +76,43 @@ class DiffTests(unittest.TestCase):
         self.assertEqual(collect.diff({"a": [1, 2]}, {"a": [1, 2]}), [])
 
 
+class ModelReportTests(unittest.TestCase):
+    @staticmethod
+    def m(id_, line, day, lifecycle="active", retires=None):
+        from datetime import datetime, timezone
+        from types import SimpleNamespace
+        return SimpleNamespace(id=id_, line=line, lifecycle=lifecycle, retires_at=retires,
+                               created_at=datetime.fromisoformat(day).replace(tzinfo=timezone.utc))
+
+    def test_only_newer_models_of_the_same_line(self):
+        current = self.m("claude-opus-5-5", "opus", "2026-09-01")
+        available = [current, self.m("claude-opus-5", "opus", "2026-05-01"),
+                     self.m("claude-sonnet-6", "sonnet", "2026-12-01"),
+                     self.m("claude-opus-6", "opus", "2027-01-10"), self.m("claude-opus-5-8", "opus", "2026-12-01")]
+        report = assess.model_report(current, available)
+        self.assertEqual([n["id"] for n in report["newer"]], ["claude-opus-6", "claude-opus-5-8"])
+        self.assertIn("claude-opus-6", publish.model_notice(report))
+
+    def test_no_notice_when_current_is_newest_and_active(self):
+        current = self.m("claude-opus-5-5", "opus", "2026-09-01")
+        report = assess.model_report(current, [current])
+        self.assertEqual(publish.model_notice(report), "")
+
+    def test_deprecation_is_reported(self):
+        from datetime import datetime, timezone
+        current = self.m("claude-opus-5-5", "opus", "2026-09-01", "deprecated", datetime(2027, 6, 1, tzinfo=timezone.utc))
+        notice = publish.model_notice(assess.model_report(current, [current]))
+        self.assertIn("deprecated", notice)
+        self.assertIn("2027-06-01", notice)
+
+    def test_foreign_model_ids_are_restricted(self):
+        current = self.m("claude-opus-5-5", "opus", "2026-09-01")
+        report = assess.model_report(current, [self.m("claude-x <b>@all</b>", "opus", "2027-01-01")])
+        self.assertEqual(report["newer"][0]["id"], "(verworfen: unerwartetes Format)")
+
+    def test_failed_check_gives_no_notice(self):
+        self.assertEqual(publish.model_notice({"configured": "claude-opus-5-5", "error": "AuthenticationError"}), "")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -44,6 +44,8 @@ jobs:
       - name: Assess (model, no tools)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # The only place to switch the model. The issue reports newer models of the same line.
+          AGENT_MODEL: claude-opus-5-5
         run: python .agent/assess.py
 
       - name: Create issue
