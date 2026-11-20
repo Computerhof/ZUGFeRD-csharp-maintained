@@ -1,34 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461;net480;net8.0</TargetFrameworks>
-    <Version>18.0.1</Version>
-    <Authors>Stephan Stapel</Authors>
-    <Company>STwo Industries GmbH</Company>
-    <Description>Open-source .NET library for reading and creating ZUGFeRD, Factur-X and XRechnung documents. Maintainer support ends on November 30, 2026. From December 1, 2026, this package will be deprecated (Legacy). Existing versions remain available under their existing open-source license. 
-Active development continues in FactoorSharp, the commercial successor: https://www.factoorsharp.de</Description>
+    <Description>Maintenance fork of ZUGFeRD-csharp by Stephan Stapel (Apache-2.0) for reading and creating ZUGFeRD, Factur-X and XRechnung documents. Maintained by chrive-solutions e.U. for its own products, without commitments to third parties. Same assembly name and namespaces as the original.</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/stephanstapel/ZUGFeRD-csharp/</PackageProjectUrl>
     <PackageTags>zugferd xml xrechnung pdf invoice</PackageTags>
-    <Copyright>STwo Industries GmbH, 2026</Copyright>
-    <AssemblyVersion>18.0.1</AssemblyVersion>
     <AssemblyTrademark>http://www.s2-industries.com</AssemblyTrademark>
-    <FileVersion>18.0.1</FileVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyName>s2industries.ZUGFeRD</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>ZUGFeRD.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>18.0.0
-* Removed obsolete functions
-* Added optional GrossQuantity, renaming normal quantity to NetQuantity
-* Replaced some ElectronicAddressSchemeIdentifiers values for more readable alternatives
-* Lots of bugfixes
-
-This is the last major version of ZUGFeRD-csharp. For new features, go to https://www.factoorsharp.de</PackageReleaseNotes>
+    <PackageReleaseNotes>See CHANGELOG.md in the repository.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>ZUGFeRD-csharp</PackageId>
+    <PackageId>ChriveSolutions.ZUGFeRD</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/stephanstapel/ZUGFeRD-csharp/</RepositoryUrl>
     <UserSecretsId>ceeaa3c6-7c48-4061-b8f6-da26a9de5879</UserSecretsId>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>True</IncludeSymbols>

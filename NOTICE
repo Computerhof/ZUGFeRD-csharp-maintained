@@ -1,0 +1,10 @@
+ZUGFeRD-csharp-maintained
+Maintenance fork of ZUGFeRD-csharp.
+
+Original work: ZUGFeRD-csharp, Copyright 2013-2026 Stephan Stapel / STwo Industries GmbH
+https://github.com/stephanstapel/ZUGFeRD-csharp
+Licensed under the Apache License, Version 2.0 (see LICENSE.txt).
+
+Modifications: Copyright 2026 chrive-solutions e.U.
+Modified files and the nature of the changes are listed in CHANGELOG.md and in the Git history of this repository.
+The original did not ship a NOTICE file; this file was added by the fork.

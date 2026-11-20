@@ -1,0 +1,161 @@
+{
+  "collected_at": "2026-11-20T07:29:31Z",
+  "packages": {
+    "MSTest": {
+      "ghsa": [],
+      "latest_stable": "4.5.3",
+      "osv": [],
+      "used": "3.6.3"
+    },
+    "MSTest.TestAdapter": {
+      "ghsa": [],
+      "latest_stable": "4.5.3",
+      "osv": [],
+      "used": "4.0.2"
+    },
+    "MSTest.TestFramework": {
+      "ghsa": [],
+      "latest_stable": "4.5.3",
+      "osv": [],
+      "used": "4.0.2"
+    },
+    "Microsoft.NET.Test.Sdk": {
+      "ghsa": [],
+      "latest_stable": "18.12.0",
+      "osv": [],
+      "used": "17.12.0,18.0.1"
+    },
+    "Microsoft.SourceLink.GitHub": {
+      "ghsa": [],
+      "latest_stable": "11.0.100",
+      "osv": [],
+      "used": "8.0.0"
+    },
+    "PDFsharp-extended": {
+      "ghsa": [],
+      "latest_stable": "1.4.0",
+      "osv": [],
+      "used": "1.3.0"
+    },
+    "System.Text.Encoding.CodePages": {
+      "ghsa": [],
+      "latest_stable": "11.0.0",
+      "osv": [],
+      "used": "4.7.1,8.0.0"
+    },
+    "coverlet.collector": {
+      "ghsa": [],
+      "latest_stable": "10.1.1",
+      "osv": [],
+      "used": "6.0.4"
+    }
+  },
+  "pages": {
+    "ferd-download-zugferd": {
+      "text_sha256": "61b48b650606d8a49cc608663592233f6120141640c0250f38d2957c8d0ef2d7",
+      "url": "https://www.ferd-net.de/download-zugferd",
+      "versions": [
+        "ZUGFeRD 2.5.2"
+      ]
+    },
+    "ferd-news": {
+      "links": [
+        "/aktuelles-veranstaltungen/aktuelles/news/neue-zugferd-version-25-veroeffentlicht",
+        "/aktuelles-veranstaltungen/aktuelles/news/zugferd-252-veroeffentlicht",
+        "/download-zugferd",
+        "/downloads/zugferd-logo",
+        "/faqs/zugferd-beispielrechnungen",
+        "/standards/zugferd",
+        "/standards/zugferd-faq"
+      ],
+      "url": "https://www.ferd-net.de/"
+    },
+    "ferd-standard-zugferd": {
+      "text_sha256": "5bc346e1a7d2495b5ac754fc2155140742ec135c0faac030ee6a4324fd193488",
+      "url": "https://www.ferd-net.de/standards/zugferd",
+      "versions": [
+        "ZUGFeRD 2.0",
+        "ZUGFeRD 2.5.2",
+        "ZUGFeRD-Version 2.4"
+      ]
+    }
+  },
+  "releases": {
+    "cen-en16931-validation": {
+      "latest_tag": "validation-1.3.17",
+      "prerelease": false,
+      "published_at": "2026-10-12T12:28:45Z",
+      "repo": "ConnectingEurope/eInvoicing-EN16931",
+      "report_only": false
+    },
+    "kosit-validator-configuration": {
+      "latest_tag": "v2026-08-31",
+      "prerelease": false,
+      "published_at": "2026-09-02T14:16:20Z",
+      "repo": "itplr-kosit/validator-configuration-xrechnung",
+      "report_only": false
+    },
+    "kosit-xrechnung-schematron": {
+      "latest_tag": "v2.6.0",
+      "prerelease": false,
+      "published_at": "2026-09-02T14:14:18Z",
+      "repo": "itplr-kosit/xrechnung-schematron",
+      "report_only": false
+    },
+    "peppol-bis-billing": {
+      "latest_tag": "3.0.22",
+      "prerelease": false,
+      "published_at": "2026-11-04T15:36:05Z",
+      "repo": "OpenPEPPOL/peppol-bis-invoice-3",
+      "report_only": true
+    }
+  },
+  "upstream": {
+    "archived": false,
+    "latest_release": "18.0.1",
+    "nuget": {
+      "ZUGFeRD-csharp": {
+        "deprecated": false,
+        "latest_listed": "18.0.1"
+      },
+      "ZUGFeRD.PDF-csharp": {
+        "deprecated": false,
+        "latest_listed": "18.0.1"
+      }
+    },
+    "pushed_at": "2026-10-27T20:53:06Z",
+    "security_advisories": []
+  },
+  "xml_hardening": {
+    "ZUGFeRD/IInvoiceDescriptorReader.cs": {
+      "DtdProcessing_Prohibit": 0,
+      "ReadToEnd": 1,
+      "XmlResolver_null": 0,
+      "new_XmlDocument": 0
+    },
+    "ZUGFeRD/InvoiceDescriptor1Reader.cs": {
+      "DtdProcessing_Prohibit": 0,
+      "ReadToEnd": 0,
+      "XmlResolver_null": 0,
+      "new_XmlDocument": 1
+    },
+    "ZUGFeRD/InvoiceDescriptor20Reader.cs": {
+      "DtdProcessing_Prohibit": 0,
+      "ReadToEnd": 0,
+      "XmlResolver_null": 0,
+      "new_XmlDocument": 1
+    },
+    "ZUGFeRD/InvoiceDescriptor22UblReader.cs": {
+      "DtdProcessing_Prohibit": 0,
+      "ReadToEnd": 1,
+      "XmlResolver_null": 0,
+      "new_XmlDocument": 1
+    },
+    "ZUGFeRD/InvoiceDescriptor23CIIReader.cs": {
+      "DtdProcessing_Prohibit": 0,
+      "ReadToEnd": 0,
+      "XmlResolver_null": 0,
+      "new_XmlDocument": 1
+    }
+  }
+}

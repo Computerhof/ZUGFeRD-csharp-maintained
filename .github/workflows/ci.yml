@@ -1,0 +1,52 @@
+# Build and tests for pull requests. Runs for pull requests from forks too, but GitHub gives those
+# no secrets and a read-only token; first-time and outside contributors need a maintainer's approval.
+# Never switch this to pull_request_target.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    # Windows: the PDF tests embed system fonts (Arial), which Ubuntu runners do not have.
+    runs-on: windows-2025
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Allow long paths (documentation/ has paths over 260 characters)
+        run: git config --system core.longpaths true
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Apache license header in library sources
+        run: |
+          missing=$(grep -L "Licensed to the Apache Software Foundation (ASF) under one" ZUGFeRD/*.cs ZUGFeRD.PDF/*.cs || true)
+          if [ -n "$missing" ]; then echo "Missing Apache-2.0 header:"; echo "$missing"; exit 1; fi
+
+      - name: Tests ZUGFeRD
+        run: dotnet test ZUGFeRD.Test/ZUGFeRD.Test.csproj -c Release
+
+      - name: Tests ZUGFeRD.PDF
+        run: dotnet test ZUGFeRD.PDF.Test/ZUGFeRD.PDF.Test.csproj -c Release
+
+      - name: Tests of the monthly check agent (no network, no model)
+        run: python -m unittest discover -s .agent -p "test_*.py"
